@@ -1,0 +1,80 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "category": "clothing",
+      "name_pl": "Gruba bluza z kapturem",
+      "name_en": "Warm hoodie",
+      "weight_g": 550,
+      "is_mandatory": false,
+      "quantity_rule": "one_per_four_days",
+      "base_priority": 30,
+      "advanced_weather": {
+        "t_ideal": 18.0,
+        "sensitivity_below": 4.5,
+        "sensitivity_above": 0.0,
+        "combos": {
+          "cold_and_rainy": 50
+        }
+      },
+      "activity_triggers": {
+        "hiking": 30,
+        "business": -50
+      }
+    },
+    {
+      "id": 2,
+      "category": "clothing",
+      "name_pl": "Krótkie spodenki",
+      "name_en": "Shorts",
+      "weight_g": 250,
+      "is_mandatory": false,
+      "quantity_rule": "one_per_three_days",
+      "base_priority": 40,
+      "advanced_weather": {
+        "t_ideal": 18.0,
+        "sensitivity_below": 0.0,
+        "sensitivity_above": 5.0,
+        "combos": {}
+      },
+      "activity_triggers": {
+        "beach": 40
+      }
+    },
+    {
+      "id": 3,
+      "category": "essentials",
+      "name_pl": "Skarpetki",
+      "name_en": "Socks",
+      "weight_g": 40,
+      "is_mandatory": true,
+      "scale_with_days": true,
+      "advanced_weather": {
+        "t_ideal": 15.0,
+        "sensitivity_below": 1.0,
+        "sensitivity_above": 0.0,
+        "combos": {}
+      },
+      "activity_triggers": {}
+    },
+    {
+      "id": 4,
+      "category": "electronics",
+      "name_pl": "Laptop biznesowy",
+      "name_en": "Business laptop",
+      "weight_g": 1600,
+      "is_mandatory": false,
+      "quantity_rule": "fixed_1",
+      "base_priority": 10,
+      "advanced_weather": {
+        "t_ideal": 20.0,
+        "sensitivity_below": 0.0,
+        "sensitivity_above": 0.0,
+        "combos": {}
+      },
+      "activity_triggers": {
+        "business": 150
+      }
+    }
+  ]
+}
