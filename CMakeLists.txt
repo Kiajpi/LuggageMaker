@@ -23,6 +23,12 @@ FetchContent_MakeAvailable(cpr)
 
 set(SOURCES
         src/main.cpp
+        include/luggagemaker/core/item_repository.hpp
+        src/core/item_repository.cpp
+        include/luggagemaker/api/weather_client.hpp
+        src/api/weather_client.cpp
+        include/luggagemaker/core/luggage_packer.hpp
+        src/core/luggage_packer.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
