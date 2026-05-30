@@ -11,7 +11,7 @@ bool ItemRepository::loadFromJson(const std::string &path_file)
         json j;
         file >> j;
 
-        items = j["items"].get<std::vector<Item>>();
+        items = j.get<std::vector<Item>>();
     }
     catch (json::exception &e) {
         std::cerr << e.what() << std::endl;

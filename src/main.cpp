@@ -5,6 +5,7 @@
 #include <luggagemaker/core/item.hpp>
 #include <luggagemaker/core/item_repository.hpp>
 #include <luggagemaker/api/weather_client.hpp>
+#include <luggagemaker/core/luggage_packer.hpp>
 
 using json = nlohmann::json;
 using namespace luggagemaker::core;
@@ -32,7 +33,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    auto pogoda = WeatherClient::fetchData(41.9028, 12.4964, "2026-06-05", "2026-06-12");
+    auto pogoda = WeatherClient::fetchData(64.1265, -21.8174, "2026-05-30", "2026-06-06");
     if (pogoda.works == false) {
         std::cerr << "Blad pobieranie pogody";
     }
@@ -49,6 +50,47 @@ int main(int argc, char* argv[])
             std::cout << temp << ", ";
         }
     }
+
+    Bag plecak{ 3000, BagType::Cabin, {} };
+    //Bag walizka_1{ 10000, BagType::Checked, {} };
+
+    std::vector<Bag> available_bags = { plecak};
+
+    LuggagePacker packer(available_bags);
+    std::vector<std::string> activities = {"spa"};
+
+    packer.pack(item_repository.getItems(), pogoda, activities);
+
+    const auto& packed_bags = packer.get_bags();
+
+    for (size_t i = 0; i < packed_bags.size(); ++i) {
+        const auto& bag = packed_bags[i];
+        std::string type_str = (bag.type == BagType::Cabin) ? "PODRĘCZNY (Cabin)" : "REJESTROWANY (Checked)";
+
+        std::cout << "--------------------------------------------------\n";
+        std::cout << "BAGAŻ #" << i + 1 << ": " << type_str << "\n";
+        std::cout << "Limit: " << bag.max_weight << "g\n";
+        std::cout << "Zawartość:\n";
+
+        int total_weight = 0;
+        std::map<std::string, int> item_counter;
+
+        for (const auto& item : bag.items) {
+            item_counter[item.name_pl]++;
+            total_weight += item.weight;
+        }
+
+        if (item_counter.empty()) {
+            std::cout << "  (pusty)\n";
+        } else {
+            for (const auto& pair : item_counter) {
+                std::cout << "  - " << pair.first << " x" << pair.second << "\n";
+            }
+        }
+        std::cout << "Waga całkowita: " << total_weight << "g\n";
+    }
+    std::cout << "--------------------------------------------------\n";
+
 
     return 0;
 }
