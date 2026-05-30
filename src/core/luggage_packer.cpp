@@ -81,7 +81,7 @@ void LuggagePacker::pack(const std::vector<Item> &items, const WeatherResult &we
         }
 
         double final_priority = activity_bonus + max_priority;
-        int limit = std::min(static_cast<int>(num_days), 7);
+        int limit = static_cast<int>(num_days+2);
 
         int m = (item.quantity_rule == "max_one") ? 1 : limit;
 

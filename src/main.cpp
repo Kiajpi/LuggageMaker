@@ -53,8 +53,9 @@ int main(int argc, char* argv[])
 
     Bag plecak{ 3000, BagType::Cabin, {} };
     //Bag walizka_1{ 10000, BagType::Checked, {} };
+    //Bag walizka_2{ 20000, BagType::Checked, {} };
 
-    std::vector<Bag> available_bags = { plecak};
+    std::vector<Bag> available_bags = {plecak};
 
     LuggagePacker packer(available_bags);
     std::vector<std::string> activities = {"spa"};
@@ -73,10 +74,11 @@ int main(int argc, char* argv[])
         std::cout << "Zawartość:\n";
 
         int total_weight = 0;
-        std::map<std::string, int> item_counter;
+        std::map<std::string, std::pair<Item, int>> item_counter;
 
         for (const auto& item : bag.items) {
-            item_counter[item.name_pl]++;
+            item_counter[item.name_en].second++;
+            item_counter[item.name_en].first = item;
             total_weight += item.weight;
         }
 
@@ -84,7 +86,7 @@ int main(int argc, char* argv[])
             std::cout << "  (pusty)\n";
         } else {
             for (const auto& pair : item_counter) {
-                std::cout << "  - " << pair.first << " x" << pair.second << "\n";
+                std::cout << "  - " << pair.first << " x" << pair.second.second << " (" << pair.second.first.weight*pair.second.second << " g)\n";
             }
         }
         std::cout << "Waga całkowita: " << total_weight << "g\n";
