@@ -1,0 +1,138 @@
+{
+  "Ryanair": {
+    "Value (Small Backpack)": [
+      { "type": "personal_item", "weight_g": 4000 }
+    ],
+    "Regular (Priority & 2 Cabin Bags)": [
+      { "type": "personal_item", "weight_g": 4000 },
+      { "type": "large_cabin_bag", "weight_g": 10000 }
+    ],
+    "Plus (With Checked Bag)": [
+      { "type": "personal_item", "weight_g": 4000 },
+      { "type": "checked_bag", "weight_g": 20000 }
+    ],
+    "Flexi Plus": [
+      { "type": "personal_item", "weight_g": 4000 },
+      { "type": "large_cabin_bag", "weight_g": 10000 }
+    ],
+    "Add-on: 10kg Check-in Bag": [
+      { "type": "small_checked_bag", "weight_g": 10000 }
+    ]
+  },
+  "Wizz Air": {
+    "Basic": [
+      { "type": "personal_item", "weight_g": 10000 }
+    ],
+    "Wizz Priority": [
+      { "type": "personal_item", "weight_g": 10000 },
+      { "type": "large_cabin_bag", "weight_g": 10000 }
+    ],
+    "Wizz Smart": [
+      { "type": "personal_item", "weight_g": 10000 },
+      { "type": "large_cabin_bag", "weight_g": 10000 },
+      { "type": "checked_bag", "weight_g": 20000 }
+    ]
+  },
+  "LOT Polish Airlines": {
+    "Economy Saver": [
+      { "type": "personal_item", "weight_g": 2000 },
+      { "type": "large_cabin_bag", "weight_g": 8000 }
+    ],
+    "Economy Standard / Flex": [
+      { "type": "personal_item", "weight_g": 2000 },
+      { "type": "large_cabin_bag", "weight_g": 8000 },
+      { "type": "checked_bag", "weight_g": 23000 }
+    ],
+    "Premium Economy (Intercontinental)": [
+      { "type": "personal_item", "weight_g": 2000 },
+      { "type": "large_cabin_bag_1", "weight_g": 6000 },
+      { "type": "large_cabin_bag_2", "weight_g": 6000 },
+      { "type": "checked_bag_1", "weight_g": 23000 },
+      { "type": "checked_bag_2", "weight_g": 23000 }
+    ]
+  },
+  "Lufthansa": {
+    "Economy Light": [
+      { "type": "personal_item", "weight_g": 2000 },
+      { "type": "large_cabin_bag", "weight_g": 8000 }
+    ],
+    "Economy Classic": [
+      { "type": "personal_item", "weight_g": 2000 },
+      { "type": "large_cabin_bag", "weight_g": 8000 },
+      { "type": "checked_bag", "weight_g": 23000 }
+    ],
+    "Business Class": [
+      { "type": "personal_item", "weight_g": 2000 },
+      { "type": "large_cabin_bag_1", "weight_g": 8000 },
+      { "type": "large_cabin_bag_2", "weight_g": 8000 },
+      { "type": "checked_bag_1", "weight_g": 32000 },
+      { "type": "checked_bag_2", "weight_g": 32000 }
+    ]
+  },
+  "EasyJet": {
+    "Standard": [
+      { "type": "personal_item", "weight_g": 15000 }
+    ],
+    "Standard with Large Cabin Bag": [
+      { "type": "personal_item", "weight_g": 15000 },
+      { "type": "large_cabin_bag", "weight_g": 15000 }
+    ],
+    "Add-on: Checked Bag 23kg": [
+      { "type": "checked_bag", "weight_g": 23000 }
+    ]
+  },
+  "Air France": {
+    "Economy Light": [
+      { "type": "personal_item", "weight_g": 4000 },
+      { "type": "large_cabin_bag", "weight_g": 8000 }
+    ],
+    "Economy Standard": [
+      { "type": "personal_item", "weight_g": 4000 },
+      { "type": "large_cabin_bag", "weight_g": 8000 },
+      { "type": "checked_bag", "weight_g": 23000 }
+    ]
+  },
+  "British Airways": {
+    "Economy Basic": [
+      { "type": "personal_item", "weight_g": 23000 },
+      { "type": "large_cabin_bag", "weight_g": 23000 }
+    ],
+    "Economy Plus": [
+      { "type": "personal_item", "weight_g": 23000 },
+      { "type": "large_cabin_bag", "weight_g": 23000 },
+      { "type": "checked_bag", "weight_g": 23000 }
+    ]
+  },
+  "Emirates": {
+    "Economy (Saver/Flex)": [
+      { "type": "large_cabin_bag", "weight_g": 7000 },
+      { "type": "checked_bag", "weight_g": 25000 }
+    ],
+    "Business Class": [
+      { "type": "briefcase", "weight_g": 7000 },
+      { "type": "cabin_bag", "weight_g": 7000 },
+      { "type": "checked_bag", "weight_g": 40000 }
+    ]
+  },
+  "Qatar Airways": {
+    "Economy Classic": [
+      { "type": "large_cabin_bag", "weight_g": 7000 },
+      { "type": "checked_bag", "weight_g": 25000 }
+    ],
+    "Business Class": [
+      { "type": "large_cabin_bag_1", "weight_g": 7500 },
+      { "type": "large_cabin_bag_2", "weight_g": 7500 },
+      { "type": "checked_bag", "weight_g": 40000 }
+    ]
+  },
+  "Norwegian": {
+    "LowFare": [
+      { "type": "personal_item", "weight_g": 10000 }
+    ],
+    "LowFare+": [
+      { "type": "personal_item", "weight_g": 5000 },
+      { "type": "large_cabin_bag", "weight_g": 5000 },
+      { "type": "checked_bag", "weight_g": 23000 }
+    ]
+  }
+}

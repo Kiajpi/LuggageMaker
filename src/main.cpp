@@ -1,98 +1,80 @@
 #include <iostream>
-#include <string>
-#include <cpr/cpr.h>
-#include <nlohmann/json.hpp>
-#include <luggagemaker/core/item.hpp>
-#include <luggagemaker/core/item_repository.hpp>
-#include <luggagemaker/api/weather_client.hpp>
-#include <luggagemaker/core/luggage_packer.hpp>
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <luggagemaker/ui/ui.hpp>
 
-using json = nlohmann::json;
-using namespace luggagemaker::core;
+static void glfw_error_callback(int error, const char* description) {
+    std::cerr << "GLFW Error " << error << ": " << description << std::endl;
+}
 
-int main(int argc, char* argv[])
-{
-    if (argc > 1)
-    {
-        std::string flag = argv[1];
-        if (flag == "-h" || flag == "--help") return 0;
+int main(int argc, char* argv[]) {
+    if (!glfwInit()) return 1;
+
+#if defined(__APPLE__)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#else
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+#endif
+
+    GLFWwindow* window = glfwCreateWindow(1400, 800, "LuggageMaker - Kreator Bagażu", nullptr, nullptr);
+    if (window == nullptr) {
+        glfwTerminate();
+        return 1;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    static const ImWchar polskie_zakresy[] = {
+        0x0020, 0x00FF,
+        0x0100, 0x017F,
+        0
+    };
+
+    io.Fonts->AddFontFromFileTTF("/System/Library/Fonts/Supplemental/Arial.ttf", 16.0f, nullptr, polskie_zakresy);
+    ApplyModernDarkTheme();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 150");
+
+    ImVec4 clear_color = ImVec4(0.08f, 0.09f, 0.10f, 1.00f);
+
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        RenderPackingAppUI();
+
+        ImGui::Render();
+        int display_w, display_h;
+        glfwGetFramebufferSize(window, &display_w, &display_h);
+        glViewport(0, 0, display_w, display_h);
+        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(window);
     }
 
-    std::cout << "Test listy ubrań z json'a" << std::endl;
-    std::string path_file = "assets/items.json";
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
-    ItemRepository item_repository;
-    if (item_repository.loadFromJson(path_file))
-    {
-        for (const auto& item : item_repository.getItems()) {
-            std::cout << item.name_pl << std::endl;
-            std::cout << item.weight << std::endl;
-            std::cout << item.weather.idealTemperature << std::endl;
-            std::cout << item.allowed << std::endl;
-            std::cout << std::endl;
-        }
-    }
-
-    auto pogoda = WeatherClient::fetchData(64.1265, -21.8174, "2026-05-30", "2026-06-06");
-    if (pogoda.works == false) {
-        std::cerr << "Blad pobieranie pogody";
-    }
-    else {
-        for (auto& temp : pogoda.max_temperature) {
-            std::cout << temp << ", ";
-        }
-        std::cout << std::endl;
-        for (auto& temp : pogoda.min_temperature) {
-            std::cout << temp << ", ";
-        }
-        std::cout << std::endl;
-        for (const auto& temp : pogoda.rain_probability) {
-            std::cout << temp << ", ";
-        }
-    }
-
-    Bag plecak{ 3000, BagType::Cabin, {} };
-    //Bag walizka_1{ 10000, BagType::Checked, {} };
-    //Bag walizka_2{ 20000, BagType::Checked, {} };
-
-    std::vector<Bag> available_bags = {plecak};
-
-    LuggagePacker packer(available_bags);
-    std::vector<std::string> activities = {"spa"};
-
-    packer.pack(item_repository.getItems(), pogoda, activities);
-
-    const auto& packed_bags = packer.get_bags();
-
-    for (size_t i = 0; i < packed_bags.size(); ++i) {
-        const auto& bag = packed_bags[i];
-        std::string type_str = (bag.type == BagType::Cabin) ? "PODRĘCZNY (Cabin)" : "REJESTROWANY (Checked)";
-
-        std::cout << "--------------------------------------------------\n";
-        std::cout << "BAGAŻ #" << i + 1 << ": " << type_str << "\n";
-        std::cout << "Limit: " << bag.max_weight << "g\n";
-        std::cout << "Zawartość:\n";
-
-        int total_weight = 0;
-        std::map<std::string, std::pair<Item, int>> item_counter;
-
-        for (const auto& item : bag.items) {
-            item_counter[item.name_en].second++;
-            item_counter[item.name_en].first = item;
-            total_weight += item.weight;
-        }
-
-        if (item_counter.empty()) {
-            std::cout << "  (pusty)\n";
-        } else {
-            for (const auto& pair : item_counter) {
-                std::cout << "  - " << pair.first << " x" << pair.second.second << " (" << pair.second.first.weight*pair.second.second << " g)\n";
-            }
-        }
-        std::cout << "Waga całkowita: " << total_weight << "g\n";
-    }
-    std::cout << "--------------------------------------------------\n";
-
+    glfwDestroyWindow(window);
+    glfwTerminate();
 
     return 0;
 }
