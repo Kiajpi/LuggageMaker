@@ -122,14 +122,14 @@ The application requires an active internet connection to retrieve weather data 
 
 ## Changelog
 
-### v0.2.0 (2026-05-31)
+### v 0.2.0 (2026-05-31)
 - Prototype version
 - Implemented smart packing algorithm.
 - Created first graphical interface with Dear ImGui.
 - Added airline baggage constraints support.
 - Added activity-based packing recommendations.
 
-### v0.1.0 (2026-05-30)
+### v 0.1.0 (2026-05-30)
 - Prototype version.
 - Basic luggage optimization implemented.
 - Item Data implemented.
