@@ -75,6 +75,7 @@ AI was used for:
 * Drafting project documentation.
 * Generating Item list consisting of 100 items.
 * Generating Luggage Policies from different airlines.
+* UI/UX documentation provider
 
 All generated code was reviewed, modified, tested, and integrated by the project author.
 
