@@ -85,5 +85,10 @@ int main(int argc, char* argv[])
     glfwDestroyWindow(window);
     glfwTerminate();
 
+    //Punta Arenas - cold ex.
+    //Dubaj - hot ex.
+    //Bracelona - medium ex.
+
+
     return 0;
 }

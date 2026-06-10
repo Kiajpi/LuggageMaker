@@ -22,10 +22,12 @@ struct Bag {
 
 class LuggagePacker
 {
-    private:
-        std::vector<Bag> bags;
     public:
-        explicit LuggagePacker(std::vector<Bag> bags) : bags(std::move(bags)) {}
+        explicit LuggagePacker(std::vector<Bag> bags, int max_weight_) : bags(bags), max_wg(max_weight_) {}
         void pack(const std::vector<Item>& items, const WeatherResult& weather, const std::vector<std::string>& planned_activities, std::string gender);
         [[nodiscard]] const std::vector<Bag>& get_bags() const { return bags; }
+        int get_max_weight() const { return max_wg; }
+    private:
+        std::vector<Bag> bags;
+        int max_wg;
 };

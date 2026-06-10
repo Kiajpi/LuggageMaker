@@ -201,6 +201,7 @@ void RenderPackingAppUI() {
             ImGui::EndCombo();
         }
 
+        int max_weight_ = 0;
         ImGui::SetCursorPos(ImVec2(20, 95));
         if (ImGui::BeginCombo("Zestaw bagaży", selectedPackage.c_str()))
         {
@@ -238,12 +239,30 @@ void RenderPackingAppUI() {
                     lon = geoJson["results"][0]["longitude"];
                 }
             }
-
+            else
+            {
+                throw std::exception();
+            }
             auto pogoda = WeatherClient::fetchData(lat, lon, departureDate, returnDate);
 
+            /*
+            std::cerr << lat << "  " << lon << std::endl << std::endl;
+
+            std::cerr <<"O TAKIE TEN TU:" << std::endl;
+            for (auto i : pogoda.max_temperature) std::cerr << i << ", ";
+            std::cerr << std::endl;
+            for (auto i : pogoda.min_temperature) std::cerr << i << ", ";
+            std::cerr << std::endl;
+            for (auto i : pogoda.rain_probability) std::cerr << i << ", ";
+            std::cerr << std::endl;
+
+            */
+
             std::vector<Bag> available_bags;
-            for (const auto& preset : airlinePresets.at(selectedAirline).at(selectedPackage)) {
+            for (const auto& preset : airlinePresets.at(selectedAirline).at(selectedPackage))
+            {
                 available_bags.push_back(Bag{ preset.max_weight, preset.type, {} });
+                max_weight_ += preset.max_weight;
             }
 
             std::vector<std::string> activities;
@@ -255,7 +274,7 @@ void RenderPackingAppUI() {
             if (selectedGender == 1) genderFilter = "female";
             else if (selectedGender == 2) genderFilter = "male";
 
-            LuggagePacker packer(available_bags);
+            LuggagePacker packer(available_bags, max_weight_);
             packer.pack(itemRepository.getItems(), pogoda, activities, genderFilter);
 
             packedBagsResults = packer.get_bags();

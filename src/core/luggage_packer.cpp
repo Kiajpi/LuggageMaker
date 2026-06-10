@@ -27,8 +27,7 @@ void LuggagePacker::pack(const std::vector<Item> &items, const WeatherResult &we
 
         if (item.gender != "unisex" && item.gender != gender) continue;
 
-        if (!item.is_important && weather.works)
-        {
+        if (!item.is_important && weather.works) {
             for (size_t d = 0; d < num_days; ++d)
             {
                 double day_priority = item.base_priority;
@@ -36,14 +35,13 @@ void LuggagePacker::pack(const std::vector<Item> &items, const WeatherResult &we
                 const double t_min = weather.min_temperature[d];
                 const double rain_prob = weather.rain_probability[d];
 
-                if (t_max > item.weather.idealTemperature) day_priority += (t_max - item.weather.idealTemperature) * (item.weather.sensitivityHigh/5) ;
-
-                if (t_min < item.weather.idealTemperature) day_priority += (item.weather.idealTemperature - t_min) * (item.weather.sensitivityLow/5);
+                if (t_max > item.weather.idealTemperature) day_priority += (t_max - item.weather.idealTemperature) * (item.weather.sensitivityHigh) ;
+                if (t_min < item.weather.idealTemperature) day_priority += (item.weather.idealTemperature - t_min) * (item.weather.sensitivityLow);
 
                 if (rain_prob > 30.0)
                 {
-                    if (t_min <= 3.0 && item.weather.combinations.count("snow") > 0) day_priority += (item.weather.combinations.at("snow")/3);
-                    else if (item.weather.combinations.count("rain") > 0)  day_priority += (item.weather.combinations.at("rain")/3);
+                    if (t_min <= 3.0 && item.weather.combinations.contains("snow")) day_priority += (item.weather.combinations.at("snow")/2);
+                    else if (item.weather.combinations.contains("rain"))  day_priority += (item.weather.combinations.at("rain")/2);
                 }
                 max_priority = std::max(max_priority, day_priority);
             }
@@ -57,7 +55,7 @@ void LuggagePacker::pack(const std::vector<Item> &items, const WeatherResult &we
         }
 
         const double final_priority = activity_bonus + max_priority;
-        const int limit = static_cast<int>(num_days*2);
+        const int limit = max_wg > 10000 ? static_cast<int>(num_days*4) : static_cast<int>(num_days*3/2);
 
         const int m = (item.quantity_rule == "max_one") ? 1 : limit;
 
@@ -65,7 +63,11 @@ void LuggagePacker::pack(const std::vector<Item> &items, const WeatherResult &we
 
         for (int i = 0; i < m; ++i)
         {
-            if (i>0) dynamic_priority = dynamic_priority*0.85;
+            if (i>0)
+            {
+                if (max_wg > 5000) dynamic_priority = dynamic_priority*0.85;
+                else dynamic_priority = dynamic_priority*0.7;
+            }
             rated_items.push_back({item, dynamic_priority});
         }
     }
