@@ -114,13 +114,18 @@ The application requires an active internet connection to retrieve weather data 
 │   │   └── luggage_packer.cpp          # Running algorithm to succesfully place all the items in designated luggages
 │   ├── ui/
 │   │   └── ui.cpp                    # Ui used to generate Deskop view of the app
-│   └── main.cpp
+│   └── main.cpp              # Main Project
 ├── CMakeLists.txt            # Project Configuration
 ├── .gitignore                
 └── README.md                 # Read me
 ```
 
 ## Changelog
+
+### v 0.3.0 (2026-06-10)
+- Implemented the gender modifications.
+- Changed UI interface to be looking better.
+- Modified luggage optimization algorithm.
 
 ### v 0.2.0 (2026-05-31)
 - Prototype version
