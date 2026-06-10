@@ -1,7 +1,7 @@
 # LuggageMaker
 
-**Version:** 0.2.0  
-**Last Updated:** 2026-05-31
+**Version:** 0.3.0  
+**Last Updated:** 2026-06-10
 
 LuggageMaker is an intelligent packing assistant designed to optimize luggage weight and content based on airline constraints, destination weather, and specific travel activities.
 
