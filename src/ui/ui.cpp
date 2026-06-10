@@ -8,18 +8,20 @@
 #include <nlohmann/json.hpp>
 #include <map>
 #include <algorithm>
+#include "luggagemaker/core/tip_maker.hpp"
+#include "luggagemaker/core/tips_repository.hpp"
 
 using namespace luggagemaker::core;
 
 enum class AppScreen { Setup, Results };
-static AppScreen currentScreen = AppScreen::Setup;
+static auto currentScreen = AppScreen::Setup;
 static float animAlpha = 0.0f;
 
 static std::map<std::string, std::map<std::string, std::vector<BagPreset>>> airlinePresets;
 static ItemRepository itemRepository;
 static bool repositoriesLoaded = false;
 
-static char cityInput[128] = "Reykjavik";
+static char cityInput[128] = "Barcelona";
 static char departureDate[16] = "2026-06-11";
 static char returnDate[16] = "2026-06-18";
 static std::string selectedAirline = "";
@@ -31,7 +33,42 @@ static bool actSpa = false;
 static bool actBeach = false;
 static bool actSki = false;
 
+static TipRepository tipRepository;
+Tip_ trip_tip;
+bool found_tip = false;
+
 static std::vector<Bag> packedBagsResults;
+
+struct Destination
+{
+    std::string city;
+    std::optional<std::string> country;
+};
+
+Destination parseDestination(const std::string& input)
+{
+    Destination d;
+
+    auto commaPos = input.find(',');
+    if (commaPos == std::string::npos)
+    {
+        d.city = input;
+        return d;
+    }
+
+    d.city = input.substr(0, commaPos);
+    d.country = input.substr(commaPos + 1);
+
+    auto trim = [](std::string& s)
+    {
+        while (!s.empty() && std::isspace(static_cast<unsigned char>(s.front()))) s.erase(s.begin());
+        while (!s.empty() && std::isspace(static_cast<unsigned char>(s.back()))) s.pop_back();
+    };
+
+    trim(d.city);
+    trim(d.country.value());
+    return d;
+}
 
 void ApplyModernDarkTheme() {
     ImGuiStyle& style = ImGui::GetStyle();
@@ -40,7 +77,7 @@ void ApplyModernDarkTheme() {
     style.ChildRounding = 14.0f;
     style.ItemSpacing = ImVec2(16, 16);
     style.FramePadding = ImVec2(16, 12);
-    style.WindowPadding = ImVec2(25, 25);
+    style.WindowPadding = ImVec2(20, 20);
 
     ImVec4* colors = style.Colors;
     colors[ImGuiCol_WindowBg]         = ImVec4(0.07f, 0.07f, 0.08f, 1.00f);
@@ -143,21 +180,26 @@ void RenderPackingAppUI() {
         if (ImGui::Button("?##Info", ImVec2(40, 40))) ImGui::OpenPopup("O programie");
 
         ImGui::TextDisabled("Ustaw cel podróży, aby dopasować algorytm pakowania.");
-        ImGui::Spacing();
-
+        ImGui::SetNextWindowSize(ImVec2(400, 490), ImGuiCond_Appearing);
+        ImGui::SetNextWindowSizeConstraints(
+            ImVec2(400, 200),
+            ImVec2(600, 600)
+        );
         if (ImGui::BeginPopupModal("O programie", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
         {
-            ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "LuggageMaker v 0.3.1 - Instrukcja");
+            ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "LuggageMaker v 0.4.0 - Instrukcja");
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::TextWrapped(
+            ImGui::TextWrapped
+            (
                 "Aplikacja automatyzuje proces przygotowania bagażu do podróży lotniczej.\n\n"
                 "Jak używać:\n"
-                "1. Wpisz miasto docelowe (np. Rzym, Barcelona) i wybierz daty podróży.\n"
-                "2. Wybierz linię lotniczą - system sam pobierze limity bagażowe.\n"
-                "3. Zaznacz swoje aktywności oraz filtr płci.\n\n"
-                "Po kliknięciu przycisku program pobierze potrzebne dane i spakuje optymalnie towje dostępne walizk."
+                "1. Wpisz miasto docelowe (np. Rzym, Barcelona) oraz dla najwiekszej precyzji dopisz kraj po przecinku.\n"
+                "2. Wybierz daty swojej podróży.\n"
+                "2. Wybierz linię lotniczą oraz twój zestaw bagaży - system sam pobierze limity bagażowe.\n"
+                "3. Zaznacz swoje aktywności oraz wybierz płeć.\n\n"
+                "Po kliknięciu przycisku na samym dole program pobierze potrzebne dane i spakuje optymalnie twoje dostępne walizki."
             );
 
             ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
@@ -169,22 +211,22 @@ void RenderPackingAppUI() {
             ImGui::EndPopup();
         }
 
-        ImGui::BeginChild("CardLocation", ImVec2(0, 285), true);
+        ImGui::BeginChild("CardLocation", ImVec2(0, 260), true);
         ImGui::SetCursorPos(ImVec2(20, 15)); ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "PARAMETRY TERMINU");
 
-        ImGui::SetCursorPos(ImVec2(20, 45));  ImGui::InputText("Kierunek docelowy", cityInput, IM_ARRAYSIZE(cityInput));
-        ImGui::SetCursorPos(ImVec2(20, 95));  ImGui::InputText("Data wylotu", departureDate, IM_ARRAYSIZE(departureDate));
-        ImGui::SetCursorPos(ImVec2(20, 145)); ImGui::InputText("Data powrotu", returnDate, IM_ARRAYSIZE(returnDate));
+        ImGui::SetCursorPos(ImVec2(20, 40));  ImGui::InputText("Kierunek docelowy", cityInput, IM_ARRAYSIZE(cityInput));
+        ImGui::SetCursorPos(ImVec2(20, 90));  ImGui::InputText("Data wylotu", departureDate, IM_ARRAYSIZE(departureDate));
+        ImGui::SetCursorPos(ImVec2(20, 140)); ImGui::InputText("Data powrotu", returnDate, IM_ARRAYSIZE(returnDate));
 
-        ImGui::SetCursorPos(ImVec2(20, 195));
+        ImGui::SetCursorPos(ImVec2(20, 190));
         ImGui::TextDisabled("Dla kogo jest ta lista?");
-        ImGui::SetCursorPos(ImVec2(20, 215));
+        ImGui::SetCursorPos(ImVec2(20, 210));
         ImGui::RadioButton("Uniwersalna", &selectedGender, 0); ImGui::SameLine();
         ImGui::RadioButton("Kobieta", &selectedGender, 1);    ImGui::SameLine();
         ImGui::RadioButton("Mężczyzna", &selectedGender, 2);
         ImGui::EndChild();
 
-        ImGui::BeginChild("CardAirline", ImVec2(0, 160), true);
+        ImGui::BeginChild("CardAirline", ImVec2(0, 140), true);
         ImGui::SetCursorPos(ImVec2(20, 15)); ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "PRZEWOŹNIK I TARYFA WAGOWA");
 
         ImGui::SetCursorPos(ImVec2(20, 45));
@@ -202,7 +244,7 @@ void RenderPackingAppUI() {
         }
 
         int max_weight_ = 0;
-        ImGui::SetCursorPos(ImVec2(20, 95));
+        ImGui::SetCursorPos(ImVec2(20, 90));
         if (ImGui::BeginCombo("Zestaw bagaży", selectedPackage.c_str()))
         {
             if (airlinePresets.contains(selectedAirline))
@@ -227,9 +269,22 @@ void RenderPackingAppUI() {
         ImGui::Spacing();
         if (ImGui::Button("Sprawdź co zapakujesz ->", ImVec2(-1, 55)))
         {
+            Destination check_destination;
+            check_destination = parseDestination(cityInput);
+
             double lat = 64.1265; double lon = -21.8174;
-            auto geoRes = cpr::Get(cpr::Url{"https://geocoding-api.open-meteo.com/v1/search"},
-                                   cpr::Parameters{{"name", cityInput}, {"count", "1"}});
+
+            cpr::Parameters params{
+            {"name", check_destination.city},
+        {"count", "1"},
+        {"language", "pl"}
+            };
+
+            if (check_destination.country.has_value())
+            {
+                params.Add({{"name", check_destination.city + ", " + *check_destination.country}});
+            }
+            auto geoRes = cpr::Get(cpr::Url{"https://geocoding-api.open-meteo.com/v1/search"}, params);
             if (geoRes.status_code == 200)
             {
                 auto geoJson = nlohmann::json::parse(geoRes.text);
@@ -238,25 +293,21 @@ void RenderPackingAppUI() {
                     lat = geoJson["results"][0]["latitude"];
                     lon = geoJson["results"][0]["longitude"];
                 }
+                tipRepository.loadFromJson("assets/tips.json");
+                std::vector<Tip_>tips_ = tipRepository.getItems();
+                found_tip = false;
+                for (auto it : tips_) {
+                    if (abs(it.lat - lat) < 1 && abs(it.lon-lon) < 1){
+                        trip_tip = it;
+                        found_tip = true;
+                    }
+                }
             }
             else
             {
-                throw std::exception();
+                throw std::runtime_error("Geocoding API error");
             }
             auto pogoda = WeatherClient::fetchData(lat, lon, departureDate, returnDate);
-
-            /*
-            std::cerr << lat << "  " << lon << std::endl << std::endl;
-
-            std::cerr <<"O TAKIE TEN TU:" << std::endl;
-            for (auto i : pogoda.max_temperature) std::cerr << i << ", ";
-            std::cerr << std::endl;
-            for (auto i : pogoda.min_temperature) std::cerr << i << ", ";
-            std::cerr << std::endl;
-            for (auto i : pogoda.rain_probability) std::cerr << i << ", ";
-            std::cerr << std::endl;
-
-            */
 
             std::vector<Bag> available_bags;
             for (const auto& preset : airlinePresets.at(selectedAirline).at(selectedPackage))
@@ -314,12 +365,14 @@ void RenderPackingAppUI() {
 
                 std::string type_label = "";
                 int num = 1;
-                if(bag.type == BagType::Cabin) {
+                if(bag.type == BagType::Cabin)
+                {
                     type_label = "Bagaż podręczny";
                     cabin_bags++;
                     num = cabin_bags;
                 }
-                else {
+                else
+                {
                     type_label = "Bagaż rejestrowany";
                     register_bag++;
                     num = register_bag;
@@ -352,7 +405,7 @@ void RenderPackingAppUI() {
                         ImGui::SetCursorScreenPos(ImVec2(start_pos.x + 15.0f, start_pos.y + 12.0f));
                         ImGui::Text("%s", name.c_str());
 
-                        ImVec2 badge_pos = ImVec2(start_pos.x + row_w - 55.0f, start_pos.y + 10.0f);
+                        auto badge_pos = ImVec2(start_pos.x + row_w - 55.0f, start_pos.y + 10.0f);
                         ImGui::GetWindowDrawList()->AddRectFilled(badge_pos, ImVec2(badge_pos.x + 40.0f, badge_pos.y + 24.0f), IM_COL32(44, 44, 46, 255), 12.0f);
 
                         char cnt_str[12]; snprintf(cnt_str, sizeof(cnt_str), "x%d", count);
@@ -374,7 +427,7 @@ void RenderPackingAppUI() {
             ImVec2 badge_size = ImVec2(390.0f, 40.0f);
             ImVec2 badge_max = ImVec2(badge_pos.x + badge_size.x, badge_pos.y + badge_size.y);
             ImGui::GetWindowDrawList()->AddRectFilled(badge_pos, badge_max, IM_COL32(44, 44, 46, 255), 12.0f);
-            ImGui::SetCursorScreenPos(ImVec2(badge_pos.x + 150.0f, badge_pos.y + 10.0f));
+            ImGui::SetCursorScreenPos(ImVec2(badge_pos.x + 140.0f, badge_pos.y + 10.0f));
 
             ImGui::SetWindowFontScale(1.2f);
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.00f), "Twoje bagaże");
@@ -401,6 +454,26 @@ void RenderPackingAppUI() {
                 DrawAppleStyleLuggage(title, current_weight, bag.max_weight, curor_pos_changed , available_width);
 
                 ImGui::SetCursorScreenPos(ImVec2(cursor_pos.x, cursor_pos.y + 130.0f));
+            }
+
+            if (found_tip)
+            {
+                ImVec2 tip_pos = ImGui::GetCursorScreenPos();
+                tip_pos.x += 10.0f;
+                ImVec2 tip_size = ImVec2(390.0f, 100.0f);
+                ImVec2 tip_max = ImVec2(tip_pos.x + tip_size.x, tip_pos.y + tip_size.y);
+                ImGui::GetWindowDrawList()->AddRectFilled(tip_pos, tip_max, IM_COL32(28, 28, 30, 255), 12.0f);
+                ImGui::SetCursorScreenPos(ImVec2(tip_pos.x + 10.0f, tip_pos.y + 10.0f));
+
+                ImGui::SetWindowFontScale(1.2f);
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.00f), "------------------------- Travel tip -------------------------");
+                ImGui::SetWindowFontScale(1.0f);
+                ImGui::SetCursorScreenPos(ImVec2(tip_pos.x+10.0f, tip_pos.y+50.0f));
+                ImGui::TextWrapped("%s", trip_tip.tip.c_str());
+
+                ImGui::SetCursorScreenPos(ImVec2(tip_pos.x, tip_pos.y));
+                ImGui::Spacing(); ImGui::Spacing();
+
             }
 
             ImGui::EndChild();

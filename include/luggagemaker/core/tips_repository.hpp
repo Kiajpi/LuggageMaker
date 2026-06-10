@@ -3,20 +3,19 @@
 #include <vector>
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
-#include "item.hpp"
+#include "tip_maker.hpp"
 
 using namespace luggagemaker::core;
 
-class ItemRepository
+class TipRepository
 {
     public:
-        ItemRepository() = default;
-        ~ItemRepository() = default;
+        TipRepository() = default;
+        ~TipRepository() = default;
 
         bool loadFromJson(const std::string& filePath);
-        [[nodiscard]] const std::vector<Item>& getItems() const;
+        [[nodiscard]] const std::vector<Tip_>& getItems() const;
 
     private:
-        std::vector <Item> items;
+        std::vector<Tip_> tips_list;
 };
-

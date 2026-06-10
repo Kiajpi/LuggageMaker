@@ -65,6 +65,8 @@ set(SOURCES
         include/luggagemaker/ui/ui.hpp
         src/ui/ui.cpp
         src/core/airline_repository.cpp
+        include/luggagemaker/core/tips_repository.hpp
+        src/core/tips_repository.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

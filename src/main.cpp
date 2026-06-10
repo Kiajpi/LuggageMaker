@@ -18,7 +18,6 @@ int main(int argc, char* argv[])
     // TODO: Dodać dynamiczną zmianę wagi przedmiotów od sprecyzowania rozmiaru/marki
     // TODO: Dodać opcję zapisywania zestawów i przeglądania
     // TODO: Dodać ogólny profil użytkownika, który spamiętuje zestaw przedmiotów/preferencje
-    // TODO: Dodać w zależności gdzie się jedzie jakieś mini tip na tripa np. do chorwacji
     // TODO: Popracować nad stabilnością aplikacji
 
 #if defined(__APPLE__)
@@ -32,7 +31,8 @@ int main(int argc, char* argv[])
 #endif
 
     GLFWwindow* window = glfwCreateWindow(1600, 1000, "LuggageMaker", nullptr, nullptr);
-    if (window == nullptr) {
+    if (window == nullptr)
+    {
         glfwTerminate();
         return 1;
     }
@@ -44,7 +44,8 @@ int main(int argc, char* argv[])
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-    static const ImWchar polskie_zakresy[] = {
+    static const ImWchar polskie_zakresy[] =
+    {
         0x0020, 0x00FF,
         0x0100, 0x017F,
         0
@@ -56,7 +57,7 @@ int main(int argc, char* argv[])
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 150");
 
-    ImVec4 clear_color = ImVec4(0.08f, 0.09f, 0.10f, 1.00f);
+    constexpr auto clear_color = ImVec4(0.08f, 0.09f, 0.10f, 1.00f);
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();

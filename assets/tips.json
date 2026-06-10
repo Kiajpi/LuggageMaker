@@ -1,0 +1,302 @@
+[
+  {
+    "city": "Kraków",
+    "lat": 50.0647,
+    "lon": 19.9450,
+    "tip": "Zwiedź Stare Miasto o poranku, gdy ulice są jeszcze spokojne i mniej zatłoczone."
+  },
+  {
+    "city": "Warszawa",
+    "lat": 52.2297,
+    "lon": 21.0122,
+    "tip": "Koniecznie odwiedź Łazienki Królewskie i zobacz darmowe koncerty Chopinowskie latem."
+  },
+  {
+    "city": "Paryż",
+    "lat": 48.8566,
+    "lon": 2.3522,
+    "tip": "Kup bilety do popularnych atrakcji online, aby uniknąć długich kolejek."
+  },
+  {
+    "city": "Londyn",
+    "lat": 51.5072,
+    "lon": -0.1276,
+    "tip": "Wiele najlepszych muzeów jest darmowych, więc warto zaplanować ich zwiedzanie."
+  },
+  {
+    "city": "Rzym",
+    "lat": 41.9028,
+    "lon": 12.4964,
+    "tip": "Unikaj restauracji przy głównych atrakcjach, bo kilka ulic dalej znajdziesz lepsze i tańsze jedzenie."
+  },
+  {
+    "city": "Barcelona",
+    "lat": 41.3851,
+    "lon": 2.1734,
+    "tip": "Zwiedzanie Sagrady Familii zarezerwuj z wyprzedzeniem, szczególnie w sezonie."
+  },
+  {
+    "city": "Berlin",
+    "lat": 52.5200,
+    "lon": 13.4050,
+    "tip": "Wypożycz rower, jest to jeden z najlepszych sposobów na poznanie miasta."
+  },
+  {
+    "city": "Amsterdam",
+    "lat": 52.3676,
+    "lon": 4.9041,
+    "tip": "Uważaj na ścieżki rowerowe, bo rowerzyści poruszają się bardzo szybko."
+  },
+  {
+    "city": "Praga",
+    "lat": 50.0755,
+    "lon": 14.4378,
+    "tip": "Najpiękniejsze widoki na miasto zobaczysz wcześnie rano z Mostu Karola."
+  },
+  {
+    "city": "Wiedeń",
+    "lat": 48.2082,
+    "lon": 16.3738,
+    "tip": "Spróbuj tradycyjnego schnitzla i odwiedź jedną z historycznych kawiarni."
+  },
+  {
+    "city": "Nowy Jork",
+    "lat": 40.7128,
+    "lon": -74.0060,
+    "tip": "Kup MetroCard lub odpowiedni bilet komunikacyjny, bo metro to najszybszy sposób przemieszczania się."
+  },
+  {
+    "city": "Los Angeles",
+    "lat": 34.0522,
+    "lon": -118.2437,
+    "tip": "Wynajem samochodu znacznie ułatwi zwiedzanie rozległego miasta."
+  },
+  {
+    "city": "Chicago",
+    "lat": 41.8781,
+    "lon": -87.6298,
+    "tip": "Spróbuj słynnej deep-dish pizzy i zobacz panoramę z Willis Tower."
+  },
+  {
+    "city": "Toronto",
+    "lat": 43.6532,
+    "lon": -79.3832,
+    "tip": "Odwiedź wyspy Toronto, aby odpocząć od miejskiego zgiełku."
+  },
+  {
+    "city": "Meksyk",
+    "lat": 19.4326,
+    "lon": -99.1332,
+    "tip": "Zabierz gotówkę na lokalne targi i spróbuj autentycznego street foodu."
+  },
+  {
+    "city": "Rio de Janeiro",
+    "lat": -22.9068,
+    "lon": -43.1729,
+    "tip": "Na plażę zabieraj tylko najpotrzebniejsze rzeczy i pilnuj swoich rzeczy osobistych."
+  },
+  {
+    "city": "Buenos Aires",
+    "lat": -34.6037,
+    "lon": -58.3816,
+    "tip": "Wieczorem wybierz się na pokaz tanga w jednej z tradycyjnych dzielnic."
+  },
+  {
+    "city": "Tokio",
+    "lat": 35.6762,
+    "lon": 139.6503,
+    "tip": "Karta Suica lub Pasmo ułatwi płacenie za transport publiczny i zakupy."
+  },
+  {
+    "city": "Kioto",
+    "lat": 35.0116,
+    "lon": 135.7681,
+    "tip": "Najpopularniejsze świątynie odwiedzaj o świcie, aby uniknąć tłumów."
+  },
+  {
+    "city": "Seul",
+    "lat": 37.5665,
+    "lon": 126.9780,
+    "tip": "Skorzystaj z rozbudowanej sieci metra, bo jest szybka i dobrze oznaczona."
+  },
+  {
+    "city": "Pekin",
+    "lat": 39.9042,
+    "lon": 116.4074,
+    "tip": "Przygotuj aplikacje działające offline, ponieważ niektóre zagraniczne usługi mogą być niedostępne."
+  },
+  {
+    "city": "Bangkok",
+    "lat": 13.7563,
+    "lon": 100.5018,
+    "tip": "W upalne dni korzystaj z klimatyzowanego metra BTS zamiast stać w korkach."
+  },
+  {
+    "city": "Singapur",
+    "lat": 1.3521,
+    "lon": 103.8198,
+    "tip": "Zwracaj uwagę na lokalne przepisy, bo kary za ich łamanie mogą być wysokie."
+  },
+  {
+    "city": "Dubaj",
+    "lat": 25.2048,
+    "lon": 55.2708,
+    "tip": "Najlepiej zwiedzać na zewnątrz rano lub wieczorem ze względu na wysokie temperatury."
+  },
+  {
+    "city": "Delhi",
+    "lat": 28.6139,
+    "lon": 77.2090,
+    "tip": "Korzystaj z butelkowanej wody i wybieraj miejsca z dużą liczbą lokalnych klientów."
+  },
+  {
+    "city": "Sydney",
+    "lat": -33.8688,
+    "lon": 151.2093,
+    "tip": "Nie zapomnij o kremie z filtrem, ponieważ australijskie słońce jest bardzo silne."
+  },
+  {
+    "city": "Melbourne",
+    "lat": -37.8136,
+    "lon": 144.9631,
+    "tip": "Pogoda zmienia się szybko, więc warto mieć ze sobą lekką kurtkę."
+  },
+  {
+    "city": "Kapsztad",
+    "lat": -33.9249,
+    "lon": 18.4241,
+    "tip": "Na Górę Stołową wybierz się przy dobrej pogodzie, wtedy widoki są spektakularne."
+  },
+  {
+    "city": "Marrakesz",
+    "lat": 31.6295,
+    "lon": -7.9811,
+    "tip": "Na bazarach negocjowanie cen jest częścią lokalnej kultury."
+  },
+  {
+    "city": "Kair",
+    "lat": 30.0444,
+    "lon": 31.2357,
+    "tip": "Wybierz się do piramid wcześnie rano, aby uniknąć największego upału."
+  },
+  {
+    "city": "Stambuł",
+    "lat": 41.0082,
+    "lon": 28.9784,
+    "tip": "Przeprawa promem między Europą a Azją to tani sposób na piękne widoki."
+  },
+  {
+    "city": "Ateny",
+    "lat": 37.9838,
+    "lon": 23.7275,
+    "tip": "Akropol najlepiej odwiedzić rano, zanim zrobi się gorąco."
+  },
+  {
+    "city": "Lizbona",
+    "lat": 38.7223,
+    "lon": -9.1393,
+    "tip": "Załóż wygodne buty, bo miasto słynie ze stromych i brukowanych uliczek."
+  },
+  {
+    "city": "Reykjavik",
+    "lat": 64.1466,
+    "lon": -21.9426,
+    "tip": "Pogoda zmienia się szybko, więc zawsze miej warstwowe ubrania."
+  },
+  {
+    "city": "Oslo",
+    "lat": 59.9139,
+    "lon": 10.7522,
+    "tip": "Przygotuj się na wysokie ceny, pamietaj, że zakupy w supermarketach są tańsze niż jedzenie na mieście."
+  },
+  {
+    "city": "Sztokholm",
+    "lat": 59.3293,
+    "lon": 18.0686,
+    "tip": "Kup kartę miejską, jeśli planujesz odwiedzić wiele muzeów."
+  },
+  {
+    "city": "Helsinki",
+    "lat": 60.1699,
+    "lon": 24.9384,
+    "tip": "Wypróbuj tradycyjną saunę, to ważny element fińskiej kultury."
+  },
+  {
+    "city": "Kopenhaga",
+    "lat": 55.6761,
+    "lon": 12.5683,
+    "tip": "Najlepiej zwiedzać miasto rowerem, tak jak robią to mieszkańcy."
+  },
+  {
+    "city": "Budapeszt",
+    "lat": 47.4979,
+    "lon": 19.0402,
+    "tip": "Odwiedź termalne kąpieliska, szczególnie wieczorem dla wyjątkowej atmosfery."
+  },
+  {
+    "city": "Wenecja",
+    "lat": 45.4408,
+    "lon": 12.3155,
+    "tip": "Zgub się w bocznych uliczkach, tam znajdziesz najbardziej klimatyczne miejsca."
+  },
+  {
+    "city": "Edynburg",
+    "lat": 55.9533,
+    "lon": -3.1883,
+    "tip": "Wejdź na Arthur's Seat, aby zobaczyć panoramę całego miasta."
+  },
+  {
+    "city": "Dublin",
+    "lat": 53.3498,
+    "lon": -6.2603,
+    "tip": "Wieczór w tradycyjnym pubie z muzyką na żywo to obowiązkowe doświadczenie."
+  },
+  {
+    "city": "Hawana",
+    "lat": 23.1136,
+    "lon": -82.3666,
+    "tip": "Miej przy sobie gotówkę, ponieważ płatności kartą mogą być ograniczone."
+  },
+  {
+    "city": "Honolulu",
+    "lat": 21.3069,
+    "lon": -157.8583,
+    "tip": "Odwiedź mniej popularne plaże, aby uniknąć największych tłumów turystów."
+  },
+  {
+    "city": "Auckland",
+    "lat": -36.8509,
+    "lon": 174.7645,
+    "tip": "Pogoda może zmieniać się kilka razy dziennie, więc ubieraj się warstwowo."
+  },
+  {
+    "city": "Mumbaj",
+    "lat": 19.0760,
+    "lon": 72.8777,
+    "tip": "Unikaj podróży w godzinach szczytu, gdy ruch uliczny jest najbardziej intensywny."
+  },
+  {
+    "city": "Santiago",
+    "lat": -33.4489,
+    "lon": -70.6693,
+    "tip": "Wjedź kolejką na wzgórze San Cristóbal, aby podziwiać panoramę Andów."
+  },
+  {
+    "city": "Zurych",
+    "lat": 47.3769,
+    "lon": 8.5417,
+    "tip": "Woda z publicznych fontann jest zwykle pitna, więc możesz uzupełnić butelkę."
+  },
+  {
+    "city": "Monachium",
+    "lat": 48.1351,
+    "lon": 11.5820,
+    "tip": "Odwiedź ogród piwny i spróbuj lokalnych specjałów bawarskich."
+  },
+  {
+    "city": "Neapol",
+    "lat": 40.8518,
+    "lon": 14.2681,
+    "tip": "Spróbuj oryginalnej pizzy neapolitańskiej w jednej z rodzinnych pizzerii."
+  }
+]
