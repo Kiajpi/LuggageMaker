@@ -97,7 +97,8 @@ The application requires an active internet connection to retrieve weather data 
 .
 ├── assets/                   # JSON assets used in the project
 │   ├── airlines.json            # Airlines bag policies
-│   └── items.json               # List of items that can be placed in luggages
+│   ├── items.json               # List of items that can be placed in luggages
+│   └── tips.json                # List of different tips matching to specific destination via GPS-coordinates.
 ├── include/                  # .hpp files
 │   └── lugagemaker/
 │       ├── api/
