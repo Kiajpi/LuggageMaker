@@ -5,7 +5,7 @@
 
 LuggageMaker is an intelligent packing assistant designed to optimize luggage weight and content based on airline constraints, destination weather, and specific travel activities.
 
-It uses generative algorithm, API integrations and user input to compute the most optimised way to pack your luggage for your trip.
+It uses generative algorithm, API integration and user input to compute the most optimized way to pack your luggage for your trip.
 
 All of it is wrapped in nice and clean UI with extremely easy to use functionality.
 
@@ -17,7 +17,7 @@ All of it is wrapped in nice and clean UI with extremely easy to use functionali
 * **Weather Integration**: Automatically fetches weather data for the destination (Open-Meteo API) to suggest appropriate clothing.
 * **Modern UI**: A responsive dashboard built with Dear ImGui.
 * **Activity Support**: Customizable packing lists for different trip types.
-* **Travel Tips**: Costomizable travel tips specifically for your destination.
+* **Travel Tips**: Customizable travel tips specifically for your destination.
 
 ---
 
@@ -133,7 +133,7 @@ The application requires an active internet connection to retrieve weather data 
 ### v 0.4.0 (2026-06-10)
 - Added travel tips database
 - Added travel tips field for over 50 popular destinations.
-- Fixed geolocalization and parsing of coordinates.
+- Fixed geolocation and parsing of coordinates.
 - Fixed the weather client issues.
 - Modified the help pop-up content and UI.
 - Modified the Item Database
