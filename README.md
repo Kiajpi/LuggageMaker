@@ -1,11 +1,11 @@
 # LuggageMaker
 
-**Version:** 0.3.1  
+**Version:** 0.3.2  
 **Last Updated:** 2026-06-10
 
 LuggageMaker is an intelligent packing assistant designed to optimize luggage weight and content based on airline constraints, destination weather, and specific travel activities.
 
-This project was created as an academic assignment to demonstrate proficiency in C++, API integration, and GUI development using Dear ImGui.
+All of it is situated in nice and clean UI with extremely easy usage for every user.
 
 ---
 
@@ -75,6 +75,7 @@ AI was used for:
 * Drafting project documentation.
 * Generating Item list consisting of 100 items.
 * Generating Luggage Policies from different airlines.
+* UI/UX documentation provider
 
 All generated code was reviewed, modified, tested, and integrated by the project author.
 
@@ -121,6 +122,10 @@ The application requires an active internet connection to retrieve weather data 
 ```
 
 ## Changelog
+
+### v 0.3.2 (2026-06-10)
+- Added the help button and help pop-up 
+- Small tweaks in UI
 
 ### v 0.3.1 (2026-06-10)
 - Updated the Item Database
