@@ -26,6 +26,6 @@ class LuggagePacker
         std::vector<Bag> bags;
     public:
         explicit LuggagePacker(std::vector<Bag> bags) : bags(std::move(bags)) {}
-        void pack(const std::vector<Item>& items, const WeatherResult& weather, const std::vector<std::string>& planned_activities);
-        const std::vector<Bag>& get_bags() const { return bags; }
+        void pack(const std::vector<Item>& items, const WeatherResult& weather, const std::vector<std::string>& planned_activities, std::string gender);
+        [[nodiscard]] const std::vector<Bag>& get_bags() const { return bags; }
 };

@@ -19,48 +19,38 @@ struct RatedItem
     }
 };
 
-void LuggagePacker::pack(const std::vector<Item> &items, const WeatherResult &weather, const std::vector<std::string>& planned_activities)
+void LuggagePacker::pack(const std::vector<Item> &items, const WeatherResult &weather, const std::vector<std::string>& planned_activities, std::string gender)
 {
     std::vector<RatedItem> rated_items;
-    size_t num_days = weather.works ? weather.max_temperature.size() : 1;
+    const size_t num_days = weather.works ? weather.max_temperature.size() : 1;
 
-    for (const auto& item : items) {
-
+    for (const auto& item : items)
+    {
         double max_priority = item.base_priority;
 
-        if (!item.is_important && weather.works) {
+        if (item.gender != "unisex" && item.gender != gender)
+        {
+            continue;
+        }
 
-            for (size_t d = 0; d < num_days; ++d) {
-
+        if (!item.is_important && weather.works)
+        {
+            for (size_t d = 0; d < num_days; ++d)
+            {
                 double day_priority = item.base_priority;
-                double t_max = weather.max_temperature[d];
-                double t_min = weather.min_temperature[d];
-                double rain_prob = weather.rain_probability[d];
+                const double t_max = weather.max_temperature[d];
+                const double t_min = weather.min_temperature[d];
+                const double rain_prob = weather.rain_probability[d];
 
-                if(t_max > item.weather.idealTemperature) {
-                    day_priority += (t_max - item.weather.idealTemperature) * (item.weather.sensitivityHigh/5) ;
-                }
+                if(t_max > item.weather.idealTemperature) day_priority += (t_max - item.weather.idealTemperature) * (item.weather.sensitivityHigh/5) ;
 
-                if (t_min < item.weather.idealTemperature) {
+                if (t_min < item.weather.idealTemperature) day_priority += (item.weather.idealTemperature - t_min) * (item.weather.sensitivityLow/5);
 
-                    day_priority += (item.weather.idealTemperature - t_min) * (item.weather.sensitivityLow/5);
+                if (rain_prob > 30.0)
+                {
 
-                }
-
-
-
-                if (rain_prob > 30.0) {
-
-                    if (t_min <= 3.0 && item.weather.combinations.count("snow") > 0) {
-
-                        day_priority += (item.weather.combinations.at("snow")/3);
-
-                    } else if (item.weather.combinations.count("rain") > 0) {
-
-                        day_priority += (item.weather.combinations.at("rain")/3);
-
-                    }
-
+                    if (t_min <= 3.0 && item.weather.combinations.count("snow") > 0) day_priority += (item.weather.combinations.at("snow")/3);
+                    else if (item.weather.combinations.count("rain") > 0)  day_priority += (item.weather.combinations.at("rain")/3);
                 }
                 max_priority = std::max(max_priority, day_priority);
 

@@ -27,9 +27,10 @@ struct Item
     AdvancedWeather weather;
     std::map<std::string, int> activity_triggers;
     std::string allowed = "any";
+    std::string gender = "unisex";
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AdvancedWeather, idealTemperature, sensitivityLow, sensitivityHigh, combinations)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Item, id, category, name_pl, name_en, weight, is_important, quantity_rule, day_scaling, base_priority, weather, activity_triggers, allowed)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Item, id, category, name_pl, name_en, weight, is_important, quantity_rule, day_scaling, base_priority, weather, activity_triggers, allowed, gender)
 
 }

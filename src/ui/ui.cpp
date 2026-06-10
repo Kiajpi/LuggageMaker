@@ -20,10 +20,12 @@ static ItemRepository itemRepository;
 static bool repositoriesLoaded = false;
 
 static char cityInput[128] = "Reykjavik";
-static char departureDate[16] = "2026-07-01";
-static char returnDate[16] = "2026-07-08";
+static char departureDate[16] = "2026-06-11";
+static char returnDate[16] = "2026-06-18";
 static std::string selectedAirline = "";
 static std::string selectedPackage = "";
+
+static int selectedGender = 0;
 
 static bool actSpa = false;
 static bool actBeach = false;
@@ -54,10 +56,10 @@ void ApplyModernDarkTheme() {
 
 void DrawAppleStyleLuggage(const std::string& type_name, int current_weight, int max_weight, ImVec2 pos, float width) {
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    float height = 110.0f;
-    ImVec2 p_max = ImVec2(pos.x + width, pos.y + height);
+    constexpr float height = 110.0f;
+    const auto p_max = ImVec2(pos.x + width, pos.y + height);
 
-    float fill_pct = (max_weight > 0) ? (float)current_weight / (float)max_weight : 0.0f;
+    float fill_pct = (max_weight > 0) ? static_cast<float>(current_weight) / static_cast<float>(max_weight) : 0.0f;
     fill_pct = std::min(fill_pct, 1.0f);
 
     draw_list->AddRectFilled(pos, p_max, IM_COL32(28, 28, 30, 255), 14.0f);
@@ -91,16 +93,17 @@ void DrawAppleStyleLuggage(const std::string& type_name, int current_weight, int
     draw_list->AddText(ImVec2(text_start_x, pos.y + 16.0f), IM_COL32(255, 255, 255, 255), type_name.c_str());
 
     char pct_str[32];
-    snprintf(pct_str, sizeof(pct_str), "%d%%", (int)(fill_pct * 100.0f));
+    snprintf(pct_str, sizeof(pct_str), "%d%%", static_cast<int>(fill_pct * 100.0f));
     draw_list->AddText(ImVec2(p_max.x - 55.0f, pos.y + 16.0f), accent_color, pct_str);
 
-    ImVec2 bar_min = ImVec2(text_start_x, pos.y + 48.0f);
-    ImVec2 bar_max = ImVec2(p_max.x - 20.0f, pos.y + 56.0f);
-    float bar_width = bar_max.x - bar_min.x;
+    const auto bar_min = ImVec2(text_start_x, pos.y + 48.0f);
+    const auto bar_max = ImVec2(p_max.x - 20.0f, pos.y + 56.0f);
+    const float bar_width = bar_max.x - bar_min.x;
 
     draw_list->AddRectFilled(bar_min, bar_max, IM_COL32(44, 44, 46, 255), 4.0f);
-    if (fill_pct > 0.0f) {
-        ImVec2 bar_fill_max = ImVec2(bar_min.x + (bar_width * fill_pct), bar_max.y);
+    if (fill_pct > 0.0f)
+    {
+        const auto bar_fill_max = ImVec2(bar_min.x + (bar_width * fill_pct), bar_max.y);
         draw_list->AddRectFilled(bar_min, bar_fill_max, accent_color, 4.0f);
     }
 
@@ -129,29 +132,40 @@ void RenderPackingAppUI() {
     ImGui::Begin("MainViewport", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, animAlpha);
 
-    if (currentScreen == AppScreen::Setup) {
+    if (currentScreen == AppScreen::Setup)
+        {
         ImGui::Spacing();
         ImGui::SetWindowFontScale(1.3f);
         ImGui::TextColored(ImVec4(1,1,1,1), "Gdzie się wybierasz?");
         ImGui::SetWindowFontScale(1.0f);
         ImGui::TextDisabled("Ustaw cel podróży, aby dopasować algorytm pakowania.");
-        ImGui::Spacing(); ImGui::Spacing();
+        ImGui::Spacing();
 
-        ImGui::BeginChild("CardLocation", ImVec2(0, 210), true);
+        ImGui::BeginChild("CardLocation", ImVec2(0, 285), true);
         ImGui::SetCursorPos(ImVec2(20, 15)); ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "PARAMETRY TERMINU");
 
         ImGui::SetCursorPos(ImVec2(20, 45));  ImGui::InputText("Kierunek docelowy", cityInput, IM_ARRAYSIZE(cityInput));
         ImGui::SetCursorPos(ImVec2(20, 95));  ImGui::InputText("Data wylotu", departureDate, IM_ARRAYSIZE(departureDate));
         ImGui::SetCursorPos(ImVec2(20, 145)); ImGui::InputText("Data powrotu", returnDate, IM_ARRAYSIZE(returnDate));
+
+        ImGui::SetCursorPos(ImVec2(20, 195));
+        ImGui::TextDisabled("Dla kogo jest ta lista?");
+        ImGui::SetCursorPos(ImVec2(20, 215));
+        ImGui::RadioButton("Uniwersalna", &selectedGender, 0); ImGui::SameLine();
+        ImGui::RadioButton("Kobieta", &selectedGender, 1);    ImGui::SameLine();
+        ImGui::RadioButton("Mężczyzna", &selectedGender, 2);
         ImGui::EndChild();
 
         ImGui::BeginChild("CardAirline", ImVec2(0, 160), true);
         ImGui::SetCursorPos(ImVec2(20, 15)); ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "PRZEWOŹNIK I TARYFA WAGOWA");
 
         ImGui::SetCursorPos(ImVec2(20, 45));
-        if (ImGui::BeginCombo("Linia", selectedAirline.c_str())) {
-            for (const auto& [airlineName, _] : airlinePresets) {
-                if (ImGui::Selectable(airlineName.c_str(), selectedAirline == airlineName)) {
+        if (ImGui::BeginCombo("Linia", selectedAirline.c_str()))
+        {
+            for (const auto& [airlineName, _] : airlinePresets)
+            {
+                if (ImGui::Selectable(airlineName.c_str(), selectedAirline == airlineName))
+                {
                     selectedAirline = airlineName;
                     selectedPackage = airlinePresets.at(selectedAirline).begin()->first;
                 }
@@ -160,34 +174,38 @@ void RenderPackingAppUI() {
         }
 
         ImGui::SetCursorPos(ImVec2(20, 95));
-        if (ImGui::BeginCombo("Zestaw bagaży", selectedPackage.c_str())) {
-            if (airlinePresets.contains(selectedAirline)) {
-                for (const auto& [packageName, _] : airlinePresets.at(selectedAirline)) {
-                    if (ImGui::Selectable(packageName.c_str(), selectedPackage == packageName)) {
-                        selectedPackage = packageName;
-                    }
+        if (ImGui::BeginCombo("Zestaw bagaży", selectedPackage.c_str()))
+        {
+            if (airlinePresets.contains(selectedAirline))
+            {
+                for (const auto& [packageName, _] : airlinePresets.at(selectedAirline))
+                {
+                    if (ImGui::Selectable(packageName.c_str(), selectedPackage == packageName))  selectedPackage = packageName;
                 }
             }
             ImGui::EndCombo();
         }
         ImGui::EndChild();
 
-        ImGui::BeginChild("CardActivities", ImVec2(0, 195), true); // Zwiększono wysokość karty
+        ImGui::BeginChild("CardActivities", ImVec2(0, 210), true);
         ImGui::SetCursorPos(ImVec2(20, 15)); ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "STYL I AKTYWNOŚCI URLOPOWE");
 
-        ImGui::SetCursorPos(ImVec2(20, 50));  ImGui::Checkbox("Relaks w SPA / Basen kryty", &actSpa);
-        ImGui::SetCursorPos(ImVec2(20, 95));  ImGui::Checkbox("Słońce, plażowanie i wysokie temperatury", &actBeach);
-        ImGui::SetCursorPos(ImVec2(20, 140)); ImGui::Checkbox("Góry i sporty zimowe (Narty/Snowboard)", &actSki);
+        ImGui::SetCursorPos(ImVec2(20, 50));  ImGui::Checkbox("SPA / Basen kryty", &actSpa);
+        ImGui::SetCursorPos(ImVec2(20, 95));  ImGui::Checkbox("Plażowanie", &actBeach);
+        ImGui::SetCursorPos(ImVec2(20, 140)); ImGui::Checkbox("Góry / sporty zimowe (Narty/Snowboard)", &actSki);
         ImGui::EndChild();
 
         ImGui::Spacing();
-        if (ImGui::Button("GENERUJ INTELIGENTNĄ LISTĘ ->", ImVec2(-1, 55))) {
+        if (ImGui::Button("Sprawdź co zapakujesz ->", ImVec2(-1, 55)))
+        {
             double lat = 64.1265; double lon = -21.8174;
             auto geoRes = cpr::Get(cpr::Url{"https://geocoding-api.open-meteo.com/v1/search"},
                                    cpr::Parameters{{"name", cityInput}, {"count", "1"}});
-            if (geoRes.status_code == 200) {
+            if (geoRes.status_code == 200)
+            {
                 auto geoJson = nlohmann::json::parse(geoRes.text);
-                if (geoJson.contains("results") && !geoJson["results"].empty()) {
+                if (geoJson.contains("results") && !geoJson["results"].empty())
+                {
                     lat = geoJson["results"][0]["latitude"];
                     lon = geoJson["results"][0]["longitude"];
                 }
@@ -201,12 +219,16 @@ void RenderPackingAppUI() {
             }
 
             std::vector<std::string> activities;
-            if (actSpa)   activities.push_back("spa");
-            if (actBeach) activities.push_back("beach");
-            if (actSki)   activities.push_back("skiing");
+            if (actSpa)   activities.emplace_back("spa");
+            if (actBeach) activities.emplace_back("beach");
+            if (actSki)   activities.emplace_back("skiing");
+
+            std::string genderFilter = "unisex";
+            if (selectedGender == 1) genderFilter = "female";
+            else if (selectedGender == 2) genderFilter = "male";
 
             LuggagePacker packer(available_bags);
-            packer.pack(itemRepository.getItems(), pogoda, activities);
+            packer.pack(itemRepository.getItems(), pogoda, activities, genderFilter);
 
             packedBagsResults = packer.get_bags();
 
@@ -215,8 +237,10 @@ void RenderPackingAppUI() {
         }
     }
 
-    else if (currentScreen == AppScreen::Results) {
-        if (ImGui::Button("<- Wróć do edycji", ImVec2(180, 40))) {
+    else if (currentScreen == AppScreen::Results)
+    {
+        if (ImGui::Button("<- Wróć do edycji", ImVec2(180, 40)))
+        {
             currentScreen = AppScreen::Setup;
             animAlpha = 0.0f;
         }
@@ -225,7 +249,8 @@ void RenderPackingAppUI() {
         ImGui::Separator();
         ImGui::Spacing();
 
-        if (ImGui::BeginTable("DashboardSplit", 2, ImGuiTableFlags_Resizable)) {
+        if (ImGui::BeginTable("DashboardSplit", 2, ImGuiTableFlags_Resizable))
+        {
             ImGui::TableSetupColumn("Ubrania", ImGuiTableColumnFlags_WidthStretch);
             ImGui::TableSetupColumn("Walizki", ImGuiTableColumnFlags_WidthFixed, 420.0f);
             ImGui::TableNextRow();
@@ -233,24 +258,45 @@ void RenderPackingAppUI() {
             ImGui::TableSetColumnIndex(0);
             ImGui::BeginChild("IosPackingList", ImVec2(0, 0), false);
 
-            for (size_t i = 0; i < packedBagsResults.size(); ++i) {
+            size_t cabin_bags = 0;
+            size_t register_bag = 0;
+
+            for (size_t i = 0; i < packedBagsResults.size(); ++i)
+            {
                 const auto& bag = packedBagsResults[i];
-                std::string type_label = (bag.type == BagType::Cabin) ? "Bagaż podręczny" : "Bagaż rejestrowany";
+
+                std::string type_label = "";
+                int num = 1;
+                if(bag.type == BagType::Cabin) {
+                    type_label = "Bagaż podręczny";
+                    cabin_bags++;
+                    num = cabin_bags;
+                }
+                else {
+                    type_label = "Bagaż rejestrowany";
+                    register_bag++;
+                    num = register_bag;
+                }
 
                 ImGui::SetWindowFontScale(1.15f);
-                ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.65f, 1.0f), "%s %zu", type_label.c_str(), i + 1);
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 15.0f);
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 15.0f);
+                ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.75f, 1.0f), "%s %d", type_label.c_str(), num);
                 ImGui::SetWindowFontScale(1.0f);
+
                 ImGui::Spacing();
 
                 std::map<std::string, int> count_map;
-                for (const auto& item : bag.items) {
+                for (const auto& item : bag.items)
+                {
                     count_map[item.name_pl]++;
                 }
 
-                if (count_map.empty()) {
-                    ImGui::TextDisabled("  Pusta walizka - brak wymaganych rzeczy.");
-                } else {
-                    for (const auto& [name, count] : count_map) {
+                if (count_map.empty())  ImGui::TextDisabled("  Pusta walizka - brak wymaganych rzeczy.");
+                else
+                {
+                    for (const auto& [name, count] : count_map)
+                    {
                         ImVec2 start_pos = ImGui::GetCursorScreenPos();
                         float row_w = ImGui::GetContentRegionAvail().x;
 
@@ -268,19 +314,30 @@ void RenderPackingAppUI() {
                         ImGui::SetCursorScreenPos(ImVec2(start_pos.x, start_pos.y + 50.0f));
                     }
                 }
-                ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+
             }
             ImGui::EndChild();
 
             ImGui::TableSetColumnIndex(1);
             ImGui::BeginChild("IosSuitcasesVisualizer", ImVec2(0, 0), false);
 
-            ImGui::SetWindowFontScale(1.3f);
-            ImGui::Text("Twoje bagaże");
+            ImVec2 badge_pos = ImGui::GetCursorScreenPos();
+            badge_pos.x += 10.0f;
+            badge_pos.y += 10.0f;
+            ImVec2 badge_size = ImVec2(390.0f, 40.0f);
+            ImVec2 badge_max = ImVec2(badge_pos.x + badge_size.x, badge_pos.y + badge_size.y);
+            ImGui::GetWindowDrawList()->AddRectFilled(badge_pos, badge_max, IM_COL32(44, 44, 46, 255), 12.0f);
+            ImGui::SetCursorScreenPos(ImVec2(badge_pos.x + 150.0f, badge_pos.y + 10.0f));
+
+            ImGui::SetWindowFontScale(1.2f);
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.00f), "Twoje bagaże");
             ImGui::SetWindowFontScale(1.0f);
+
+            ImGui::SetCursorScreenPos(ImVec2(badge_pos.x, badge_pos.y + 20.0f));
             ImGui::Spacing(); ImGui::Spacing();
 
-            for (size_t i = 0; i < packedBagsResults.size(); ++i) {
+            for (size_t i = 0; i < packedBagsResults.size(); ++i)
+            {
                 const auto& bag = packedBagsResults[i];
 
                 std::string title = "Walizka Duża";
@@ -291,9 +348,10 @@ void RenderPackingAppUI() {
                 for (const auto& item : bag.items) current_weight += item.weight;
 
                 ImVec2 cursor_pos = ImGui::GetCursorScreenPos();
-                float available_width = ImGui::GetContentRegionAvail().x;
+                ImVec2 curor_pos_changed = {cursor_pos.x + 10.0f, cursor_pos.y};
+                float available_width = ImGui::GetContentRegionAvail().x - 20.0f;
 
-                DrawAppleStyleLuggage(title, current_weight, bag.max_weight, cursor_pos, available_width);
+                DrawAppleStyleLuggage(title, current_weight, bag.max_weight, curor_pos_changed , available_width);
 
                 ImGui::SetCursorScreenPos(ImVec2(cursor_pos.x, cursor_pos.y + 130.0f));
             }
