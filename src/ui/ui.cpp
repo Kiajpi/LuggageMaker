@@ -54,7 +54,7 @@ void ApplyModernDarkTheme() {
     colors[ImGuiCol_CheckMark]        = ImVec4(0.03f, 0.51f, 1.00f, 1.00f);
 }
 
-void DrawAppleStyleLuggage(const std::string& type_name, int current_weight, int max_weight, ImVec2 pos, float width) {
+void DrawAppleStyleLuggage(const std::string& type_name, const int current_weight, const int max_weight, ImVec2 pos, const float width) {
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     constexpr float height = 110.0f;
     const auto p_max = ImVec2(pos.x + width, pos.y + height);
@@ -138,8 +138,36 @@ void RenderPackingAppUI() {
         ImGui::SetWindowFontScale(1.3f);
         ImGui::TextColored(ImVec4(1,1,1,1), "Gdzie się wybierasz?");
         ImGui::SetWindowFontScale(1.0f);
+
+        ImGui::SameLine(ImGui::GetWindowWidth() - 60.0f);
+        if (ImGui::Button("?##Info", ImVec2(40, 40))) ImGui::OpenPopup("O programie");
+
         ImGui::TextDisabled("Ustaw cel podróży, aby dopasować algorytm pakowania.");
         ImGui::Spacing();
+
+        if (ImGui::BeginPopupModal("O programie", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+        {
+            ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "LuggageMaker v 0.3.1 - Instrukcja");
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            ImGui::TextWrapped(
+                "Aplikacja automatyzuje proces przygotowania bagażu do podróży lotniczej.\n\n"
+                "Jak używać:\n"
+                "1. Wpisz miasto docelowe (np. Rzym, Barcelona) i wybierz daty podróży.\n"
+                "2. Wybierz linię lotniczą - system sam pobierze limity bagażowe.\n"
+                "3. Zaznacz swoje aktywności oraz filtr płci.\n\n"
+                "Po kliknięciu przycisku program pobierze potrzebne dane i spakuje optymalnie towje dostępne walizk."
+            );
+
+            ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+
+            if (ImGui::Button("Wyjdź", ImVec2(-1, 40)))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
 
         ImGui::BeginChild("CardLocation", ImVec2(0, 285), true);
         ImGui::SetCursorPos(ImVec2(20, 15)); ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "PARAMETRY TERMINU");
@@ -162,7 +190,7 @@ void RenderPackingAppUI() {
         ImGui::SetCursorPos(ImVec2(20, 45));
         if (ImGui::BeginCombo("Linia", selectedAirline.c_str()))
         {
-            for (const auto& [airlineName, _] : airlinePresets)
+            for (const auto &airlineName: airlinePresets | std::views::keys)
             {
                 if (ImGui::Selectable(airlineName.c_str(), selectedAirline == airlineName))
                 {
@@ -188,7 +216,7 @@ void RenderPackingAppUI() {
         ImGui::EndChild();
 
         ImGui::BeginChild("CardActivities", ImVec2(0, 210), true);
-        ImGui::SetCursorPos(ImVec2(20, 15)); ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "STYL I AKTYWNOŚCI URLOPOWE");
+        ImGui::SetCursorPos(ImVec2(20, 15)); ImGui::TextColored(ImVec4(0.03f, 0.51f, 1.00f, 1.00f), "STYL I AKTYWNOŚCI");
 
         ImGui::SetCursorPos(ImVec2(20, 50));  ImGui::Checkbox("SPA / Basen kryty", &actSpa);
         ImGui::SetCursorPos(ImVec2(20, 95));  ImGui::Checkbox("Plażowanie", &actBeach);
