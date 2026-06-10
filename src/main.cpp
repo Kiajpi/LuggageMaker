@@ -9,8 +9,17 @@ static void glfw_error_callback(int error, const char* description) {
     std::cerr << "GLFW Error " << error << ": " << description << std::endl;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     if (!glfwInit()) return 1;
+
+    // TODO: Lista rzeczy do zrobienia
+    // TODO: Dodać edycję przedmiotów w liście wyjściowej typu usunięcie, zmniejszenie ilości
+    // TODO: Dodać dynamiczną zmianę wagi przedmiotów od sprecyzowania rozmiaru/marki
+    // TODO: Dodać opcję zapisywania zestawów i przeglądania
+    // TODO: Dodać ogólny profil użytkownika, który spamiętuje zestaw przedmiotów/preferencje
+    // TODO: Dodać w zależności gdzie się jedzie jakieś mini tip na tripa np. do chorwacji
+    // TODO: Popracować nad stabilnością aplikacji
 
 #if defined(__APPLE__)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -22,7 +31,7 @@ int main(int argc, char* argv[]) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #endif
 
-    GLFWwindow* window = glfwCreateWindow(1400, 800, "LuggageMaker - Kreator Bagażu", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1600, 1000, "LuggageMaker", nullptr, nullptr);
     if (window == nullptr) {
         glfwTerminate();
         return 1;
